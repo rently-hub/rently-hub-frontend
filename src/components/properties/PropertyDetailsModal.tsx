@@ -84,7 +84,7 @@ export function PropertyDetailsModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="w-full max-w-3xl bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="w-[95%] md:w-full max-w-3xl bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* === HEADER (FOTO) === */}
         <div className="h-48 bg-slate-200 relative shrink-0">
           <img
@@ -104,9 +104,8 @@ export function PropertyDetailsModal({
 
         {/* === BODY === */}
         <div className="p-6 overflow-y-auto flex-1">
-          {/* Cabeçalho do Conteúdo + Botão Editar */}
-          <div className="flex justify-between items-start mb-6">
-            <div className="flex-1 mr-4">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
+            <div className="flex-1">
               {isEditing ? (
                 <input
                   className="text-2xl font-bold text-slate-900 w-full border-b-2 border-slate-200 focus:border-slate-900 outline-none pb-1"
@@ -116,13 +115,13 @@ export function PropertyDetailsModal({
                   }
                 />
               ) : (
-                <h2 className="text-2xl font-bold text-slate-900">
+                <h2 className="text-2xl font-bold text-slate-900 leading-tight">
                   {property.title}
                 </h2>
               )}
 
-              <div className="flex items-center text-slate-500 mt-1">
-                <MapPin size={16} className="mr-1" />
+              <div className="flex items-center text-slate-500 mt-2 md:mt-1">
+                <MapPin size={16} className="mr-1 shrink-0" />
                 {isEditing ? (
                   <input
                     className="text-sm w-full border-b border-slate-200 focus:border-slate-900 outline-none"
@@ -132,7 +131,7 @@ export function PropertyDetailsModal({
                     }
                   />
                 ) : (
-                  <span>{property.address}</span>
+                  <span className="truncate">{property.address}</span>
                 )}
               </div>
             </div>
@@ -141,15 +140,14 @@ export function PropertyDetailsModal({
             {!isEditing && (
               <button
                 onClick={() => setIsEditing(true)}
-                className="flex items-center gap-2 text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg font-medium transition-colors"
+                className="flex items-center justify-center gap-2 text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg font-medium transition-colors w-full md:w-auto border md:border-transparent border-blue-100"
               >
                 <Edit2 size={16} /> Editar
               </button>
             )}
           </div>
 
-          {/* Grid de Informações */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
             {/* Preço */}
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
               <div className="flex items-center gap-2 text-slate-500 mb-1 text-sm">
@@ -238,7 +236,7 @@ export function PropertyDetailsModal({
                 }
               />
             ) : (
-              <p className="text-slate-600 leading-relaxed whitespace-pre-line">
+              <p className="text-slate-600 leading-relaxed whitespace-pre-line text-sm md:text-base">
                 {property.description || "Sem descrição."}
               </p>
             )}
@@ -247,25 +245,25 @@ export function PropertyDetailsModal({
 
         {/* === FOOTER (AÇÕES) === */}
         {isEditing && (
-          <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
+          <div className="p-4 border-t border-slate-100 bg-slate-50 flex flex-col-reverse gap-4 md:flex-row md:justify-between md:items-center">
             <button
               onClick={handleDelete}
-              className="text-red-600 hover:text-red-700 hover:bg-red-50 px-4 py-2 rounded-lg font-medium flex items-center gap-2"
+              className="text-red-600 hover:text-red-700 hover:bg-red-50 px-4 py-3 md:py-2 rounded-lg font-medium flex items-center justify-center gap-2 w-full md:w-auto"
             >
               <Trash2 size={18} /> Excluir Imóvel
             </button>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
               <button
                 onClick={() => setIsEditing(false)}
-                className="px-6 py-2 border border-slate-300 rounded-lg font-medium hover:bg-white transition-colors"
+                className="px-6 py-3 md:py-2 border border-slate-300 rounded-lg font-medium hover:bg-white transition-colors w-full md:w-auto"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="px-6 py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 flex items-center gap-2"
+                className="px-6 py-3 md:py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 flex items-center justify-center gap-2 w-full md:w-auto"
               >
                 <Save size={18} />{" "}
                 {loading ? "Salvando..." : "Salvar Alterações"}
