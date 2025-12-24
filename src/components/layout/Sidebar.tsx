@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 export function Sidebar() {
-  const location = useLocation(); // Para saber em qual página estamos
+  const location = useLocation();
   const navigate = useNavigate();
 
   function handleLogout() {
@@ -17,7 +17,6 @@ export function Sidebar() {
     navigate("/");
   }
 
-  // Lista de itens do menu para ficar fácil adicionar mais depois
   const menuItems = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
     { label: "Propriedades", icon: Building2, path: "/properties" },
@@ -27,14 +26,13 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col h-screen fixed left-0 top-0 border-r border-slate-800">
-      {/* Logo da Empresa */}
+    <aside className="w-full h-full bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800">
+      {" "}
       <div className="h-16 flex items-center px-6 border-b border-slate-800">
         <span className="text-xl font-bold text-white tracking-tight">
           Rently<span className="text-blue-500">Hub</span>
         </span>
       </div>
-
       {/* Navegação */}
       <nav className="flex-1 py-6 px-3 space-y-1">
         {menuItems.map((item) => {
@@ -60,8 +58,6 @@ export function Sidebar() {
           );
         })}
       </nav>
-
-      {/* Área do Usuário / Logout */}
       <div className="p-4 border-t border-slate-800">
         <button
           onClick={handleLogout}
