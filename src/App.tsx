@@ -3,6 +3,7 @@ import { Login } from "./pages/Login";
 import { Signup } from "./pages/Singup";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import { Dashboard } from "./pages/Dashboard";
+import { Properties } from "./pages/Properties";
 
 function App() {
   return (
@@ -15,10 +16,7 @@ function App() {
         {/* Rotas Protegidas (Dashboard) */}
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route
-            path="/properties"
-            element={<div>Tela de Propriedades (Em breve)</div>}
-          />
+          <Route path="/properties" element={<Properties />} />
           <Route
             path="/calendar"
             element={<div>Tela de Calendário (Em breve)</div>}

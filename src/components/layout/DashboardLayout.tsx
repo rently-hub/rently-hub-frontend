@@ -1,5 +1,5 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { Sidebar } from "./SideBar";
+import { Sidebar } from "./Sidebar";
 
 export function DashboardLayout() {
   // Verificação de Segurança Básica
