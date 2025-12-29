@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, MapPin, Search } from "lucide-react";
+import { Plus, MapPin } from "lucide-react";
 import { api } from "../services/api";
 import type { Property } from "../types";
 import { CreatePropertyModal } from "../components/properties/CreatePropertyModal";
@@ -99,6 +99,12 @@ export function Properties() {
                   <span className="text-xs text-slate-400">
                     ID: #{property.id}
                   </span>
+                  <button
+                    onClick={() => setSelectedProperty(property)}
+                    className="text-sm font-medium text-slate-900 hover:text-green-600 transition-colors"
+                  >
+                    Alugar
+                  </button>
                   <button
                     onClick={() => setSelectedProperty(property)}
                     className="text-sm font-medium text-slate-900 hover:text-blue-600 transition-colors"
