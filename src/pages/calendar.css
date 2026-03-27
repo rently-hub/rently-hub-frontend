@@ -1,0 +1,165 @@
+/* 🎨 Premium RentlyHub Calendar v2 Design System */
+
+.rbc-calendar {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  color: #1e293b;
+}
+
+/* 📅 Grid & Layout */
+.rbc-month-view {
+  border: none !important;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+}
+
+.rbc-header {
+  padding: 16px 0 !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.05em;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  background: #f8fafc;
+}
+
+.rbc-day-bg {
+  border-left: 1px solid #f1f5f9 !important;
+}
+
+.rbc-month-row {
+  border-top: 1px solid #f1f5f9 !important;
+}
+
+/* 🔢 Date Cells */
+.rbc-date-cell {
+  padding: 12px 14px 0 0 !important;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #64748b;
+  transition: color 0.2s ease;
+}
+
+.rbc-off-range-bg {
+  background-color: #fbfcfd !important;
+}
+
+.rbc-today {
+  background-color: #f0f7ff !important;
+}
+
+.rbc-today .rbc-date-cell {
+  color: #3b82f6 !important;
+  font-weight: 900;
+  font-size: 1rem;
+}
+
+/* 🎟️ Premium Event Styling (Trello-Inspired) */
+.rbc-event {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 2px 4px !important;
+  overflow: visible !important;
+}
+
+.rbc-event-content {
+  overflow: visible !important;
+}
+
+/* Container que simula o Card do Trello */
+.event-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  min-height: 42px;
+}
+
+/* A barra lateral de cor da propriedade */
+.event-property-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 4px 0 0 4px;
+}
+
+.event-card:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  background: rgba(255, 255, 255, 1);
+}
+
+.event-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 2px;
+}
+
+/* 🏷️ Trello-style Flags / Badges */
+.event-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-left: 2px;
+}
+
+.flag {
+  height: 6px;
+  width: 24px;
+  border-radius: 10px;
+  opacity: 0.8;
+}
+
+/* View Agenda Overrides */
+.rbc-agenda-view {
+  border: none !important;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.rbc-agenda-table {
+  border: none !important;
+}
+
+.rbc-agenda-date-cell, .rbc-agenda-time-cell {
+  font-weight: 700;
+  color: #64748b;
+  padding: 16px !important;
+}
+
+.rbc-agenda-event-cell {
+  padding: 12px 16px !important;
+}
+
+/* Custom Selection Highlight */
+.rbc-selected {
+  background-color: transparent !important;
+}
+
+.rbc-selected .event-card {
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}

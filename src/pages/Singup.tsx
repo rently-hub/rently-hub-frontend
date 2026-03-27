@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { api } from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import { UserPlus, ArrowLeft } from "lucide-react";
+import { GoogleLogin } from '@react-oauth/google';
 
 export function Signup() {
   const navigate = useNavigate();
@@ -22,12 +24,32 @@ export function Signup() {
     try {
       await api.post("/users/", formData);
 
-      alert("Conta criada com sucesso! Faça login para continuar.");
+      toast.success("Conta criada! Faça login para continuar.");
 
       navigate("/");
     } catch (err) {
       console.error(err);
       setError("Erro ao criar conta. Tente outro email.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogleSuccess(credentialResponse: any) {
+    try {
+      setLoading(true);
+      setError("");
+      
+      const response = await api.post("/login/google", {
+        token: credentialResponse.credential
+      });
+      
+      const { access_token } = response.data;
+      localStorage.setItem("@RentlyHub:token", access_token);
+      navigate("/dashboard");
+    } catch(err) {
+      console.error(err);
+      setError("Falha ao usar conta Google.");
     } finally {
       setLoading(false);
     }
@@ -110,6 +132,25 @@ export function Signup() {
           >
             {loading ? "Criando..." : "Criar Conta"}
           </button>
+          
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-white px-2 text-slate-500">Ou continue com</span>
+            </div>
+          </div>
+          
+          <div className="flex justify-center mb-6">
+             <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                setError("Falha ao iniciar com o Google.");
+              }}
+              useOneTap
+            />
+          </div>
         </form>
 
         {/* Botão de Voltar */}

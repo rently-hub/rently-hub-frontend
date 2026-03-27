@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { X, Upload, Home, DollarSign, Users } from "lucide-react";
+import { X, Home, DollarSign, Users, Link as LinkIcon } from "lucide-react";
+import toast from "react-hot-toast";
 import { api } from "../../services/api";
 import type { CreatePropertyData, Property } from "../../types";
 
@@ -8,6 +9,8 @@ interface Props {
   onClose: () => void;
   onSuccess: (newProperty: Property) => void;
 }
+
+import { createPortal } from "react-dom";
 
 export function CreatePropertyModal({ isOpen, onClose, onSuccess }: Props) {
   const [loading, setLoading] = useState(false);
@@ -19,6 +22,7 @@ export function CreatePropertyModal({ isOpen, onClose, onSuccess }: Props) {
     cleaning_fee: 0,
     max_guests: 1,
     photo_url: "",
+    ical_url: "",
   });
 
   if (!isOpen) return null;
@@ -31,7 +35,6 @@ export function CreatePropertyModal({ isOpen, onClose, onSuccess }: Props) {
       const response = await api.post("/properties/", formData);
       onSuccess(response.data);
       onClose();
-      // Reset do form
       setFormData({
         title: "",
         description: "",
@@ -40,31 +43,47 @@ export function CreatePropertyModal({ isOpen, onClose, onSuccess }: Props) {
         cleaning_fee: 0,
         max_guests: 1,
         photo_url: "",
+        ical_url: "",
       });
     } catch (error) {
       console.error(error);
-      alert("Erro ao criar propriedade.");
+      toast.error("Erro ao criar propriedade.");
     } finally {
       setLoading(false);
     }
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="w-[95%] md:w-full max-w-2xl bg-white rounded-xl shadow-2xl relative animate-in fade-in zoom-in duration-200 flex flex-col max-h-[90vh] overflow-y-auto">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
-        >
-          <X size={24} />
-        </button>
-        <div className="p-6">
-          <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-            <Home className="text-slate-900" size={24} />
+  return createPortal(
+    <div className="fixed inset-0 z-[60] flex justify-end">
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+        onClick={onClose} 
+      />
+
+      {/* Drawer */}
+      <div className="relative w-full md:w-[600px] xl:w-[700px] h-full bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-500 ease-out">
+
+        
+        {/* Header */}
+        <div className="px-6 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <h2 className="text-xl font-black text-slate-800 flex items-center gap-3">
+            <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+              <Home size={20} />
+            </div>
             Nova Propriedade
           </h2>
+          <button
+            onClick={onClose}
+            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full transition-colors"
+          >
+            <X size={20} />
+          </button>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <form id="create-property-form" onSubmit={handleSubmit} className="space-y-6">
             {/* 1. TÍTULO */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -176,49 +195,49 @@ export function CreatePropertyModal({ isOpen, onClose, onSuccess }: Props) {
               />
             </div>
 
-            {/* 5. ÁREA DA FOTO (PLACEHOLDER VISUAL) */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Foto Principal
+            <div className="border-t border-slate-100 pt-6">
+              <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                <LinkIcon size={16} className="text-indigo-500" /> Link iCal (Airbnb / Booking) <span className="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-0.5 rounded">Opcional</span>
               </label>
-              <button
-                type="button"
-                className="w-full border-2 border-dashed border-slate-300 rounded-lg p-6 flex flex-col items-center justify-center text-slate-500 hover:border-slate-500 hover:bg-slate-50 transition-all cursor-pointer group"
-                onClick={() =>
-                  alert("Em breve: Integração com Upload de Imagens!")
+              <input
+                type="url"
+                className="w-full rounded-xl border-slate-200 border p-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm bg-slate-50 focus:bg-white"
+                placeholder="Ex: https://www.airbnb.com/calendar/ical/..."
+                value={formData.ical_url}
+                onChange={(e) =>
+                  setFormData({ ...formData, ical_url: e.target.value })
                 }
-              >
-                <div className="bg-slate-100 p-3 rounded-full mb-2 group-hover:bg-slate-200 transition-colors">
-                  <Upload size={24} className="text-slate-600" />
-                </div>
-                <span className="text-sm font-medium">
-                  Clique para adicionar uma foto
-                </span>
-                <span className="text-xs text-slate-400 mt-1">
-                  PNG, JPG até 5MB
-                </span>
-              </button>
-            </div>
-
-            <div className="flex flex-col-reverse gap-3 md:flex-row pt-4 border-t border-slate-100">
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-full md:flex-1 px-4 py-3 md:py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-medium transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full md:flex-1 px-4 py-3 md:py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 font-medium disabled:opacity-70 transition-colors shadow-sm"
-              >
-                {loading ? "Salvando..." : "Criar Propriedade"}
-              </button>
+              />
+              <p className="text-xs text-slate-500 mt-2">Cole aqui o link ".ics" se desejar que o calendário sincronize automaticamente as datas para evitar overbooking.</p>
             </div>
           </form>
         </div>
+
+        {/* Footer (Sticky) */}
+        <div className="p-6 border-t border-slate-100 bg-white shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] flex flex-col-reverse md:flex-row gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full md:w-1/3 px-4 py-3 border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="create-property-form"
+            disabled={loading}
+            className="w-full md:w-2/3 px-4 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 disabled:opacity-70 transition-colors shadow-lg shadow-indigo-500/30 flex items-center justify-center"
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                Salvando...
+              </span>
+            ) : "Criar Propriedade"}
+          </button>
+        </div>
       </div>
     </div>
-  );
+  , document.body);
 }
+

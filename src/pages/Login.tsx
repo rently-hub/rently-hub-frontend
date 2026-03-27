@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { api } from "../services/api";
 import { Link, useNavigate } from "react-router-dom"; // 1. Importe o useNavigate
+import { GoogleLogin } from '@react-oauth/google';
 
 export function Login() {
   const navigate = useNavigate(); // 2. Inicialize o hook
@@ -44,6 +45,26 @@ export function Login() {
     } catch (err) {
       console.error(err);
       setError("Falha no login. Verifique email e senha.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogleSuccess(credentialResponse: any) {
+    try {
+      setLoading(true);
+      setError("");
+      
+      const response = await api.post("/login/google", {
+        token: credentialResponse.credential
+      });
+      
+      const { access_token } = response.data;
+      localStorage.setItem("@RentlyHub:token", access_token);
+      navigate("/dashboard");
+    } catch(err) {
+      console.error(err);
+      setError("Falha no login com Google.");
     } finally {
       setLoading(false);
     }
@@ -109,6 +130,25 @@ export function Login() {
             >
               {loading ? "Entrando..." : "Entrar"}
             </button>
+          </div>
+          
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-white px-2 text-slate-500">Ou continue com</span>
+            </div>
+          </div>
+          
+          <div className="flex justify-center">
+             <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                setError("Falha ao iniciar o login com o Google.");
+              }}
+              useOneTap
+            />
           </div>
         </form>
         <div className="text-center mt-4">

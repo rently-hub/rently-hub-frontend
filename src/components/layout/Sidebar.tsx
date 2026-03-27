@@ -6,6 +6,8 @@ import {
   Settings,
   User,
   LogOut,
+  Key,
+  Receipt,
 } from "lucide-react";
 
 export function Sidebar() {
@@ -20,6 +22,8 @@ export function Sidebar() {
   const menuItems = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
     { label: "Propriedades", icon: Building2, path: "/properties" },
+    { label: "Aluguéis", icon: Key, path: "/rentals" },
+    { label: "Despesas", icon: Receipt, path: "/expenses" },
     { label: "Calendário", icon: Calendar, path: "/calendar" },
     { label: "Perfil", icon: User, path: "/profile" },
     { label: "Configurações", icon: Settings, path: "/settings" },

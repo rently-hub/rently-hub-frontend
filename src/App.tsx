@@ -4,10 +4,17 @@ import { Signup } from "./pages/Singup";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import { Dashboard } from "./pages/Dashboard";
 import { Properties } from "./pages/Properties";
+import { Rentals } from "./pages/Rentals";
+import { Expenses } from "./pages/Expenses";
+import { Calendar } from "./pages/Calendar";
+import { Profile } from "./pages/Profile";
+import { Settings } from "./pages/Settings";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-right" />
       <Routes>
         {/* Rotas Públicas */}
         <Route path="/" element={<Login />} />
@@ -17,18 +24,11 @@ function App() {
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/properties" element={<Properties />} />
-          <Route
-            path="/calendar"
-            element={<div>Tela de Calendário (Em breve)</div>}
-          />
-          <Route
-            path="/profile"
-            element={<div>Tela de Perfil (Em breve)</div>}
-          />
-          <Route
-            path="/settings"
-            element={<div>Tela de Configurações (Em breve)</div>}
-          />
+          <Route path="/rentals" element={<Rentals />} />
+          <Route path="/expenses" element={<Expenses />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
 
         {/* Redireciona qualquer rota maluca para o login */}
