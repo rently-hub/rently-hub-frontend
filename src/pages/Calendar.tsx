@@ -8,6 +8,7 @@ import { api } from "../services/api";
 import type { Rental, Property } from "../types";
 import { Calendar as CalendarIcon, Loader2, ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import { PropertyDetailsModal } from "../components/properties/PropertyDetailsModal";
+import { RentalDetailsModal } from "../components/rentals/RentalDetailsModal";
 
 const locales = {
   "pt-BR": ptBR,
@@ -33,6 +34,8 @@ export function Calendar() {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [selectedRental, setSelectedRental] = useState<Rental | null>(null);
+  const [isRentalDetailsOpen, setIsRentalDetailsOpen] = useState(false);
 
   // Responsive view
   const [view, setView] = useState<View>("month");
@@ -83,18 +86,19 @@ export function Calendar() {
   }));
 
   const handleSelectEvent = (event: any) => {
-    const propertyId = event.resource.property_id;
-    const prop = properties.find(p => p.id === propertyId);
-    if (prop) {
-      setSelectedProperty(prop);
-      setIsModalOpen(true);
-    }
+    setSelectedRental(event.resource);
+    setIsRentalDetailsOpen(true);
   };
 
   // Custom event styles
-  const eventPropGetter = () => {
+  const eventPropGetter = (event: any) => {
+    const isPast = new Date(event.end) < new Date();
     return {
       className: "rbc-event-custom",
+      style: {
+        opacity: isPast ? 0.5 : 1,
+        transition: "opacity 0.2s ease",
+      }
     };
   };
 
@@ -189,6 +193,14 @@ export function Calendar() {
           fetchData(); 
         }}
       />
+      <RentalDetailsModal
+        isOpen={isRentalDetailsOpen}
+        onClose={() => setIsRentalDetailsOpen(false)}
+        rental={selectedRental}
+        onUpdate={() => {
+            fetchData();
+        }}
+      />
     </div>
   );
 }
@@ -199,18 +211,25 @@ function CustomEvent({ event }: any) {
   const propertyId = rental.property_id || 0;
   const propertyColor = PROPERTY_COLORS[propertyId % PROPERTY_COLORS.length];
 
-  // Colors for flags
-  const platformColors: Record<string, string> = {
-    "Airbnb": "#ff5a5f",
-    "Booking": "#003580",
-    "Direto": "#10b981"
+  // Colors for platforms
+  const getPlatformColor = (source: string) => {
+    const s = source.toLowerCase();
+    if (s.includes("airbnb")) return "#ff5a5f";
+    if (s.includes("booking")) return "#003580";
+    if (s.includes("google")) return "#4285f4";
+    if (s.includes("direto")) return "#10b981";
+    return "#94a3b8"; // Default slate
   };
 
   const statusColors: Record<string, string> = {
     "active": "#3b82f6",
     "completed": "#64748b",
-    "cancelled": "#f43f5e"
+    "cancelled": "#f43f5e",
+    "Confirmada": "#10b981",
+    "paid": "#10b981"
   };
+
+  const status = rental.is_paid ? "paid" : rental.status;
 
   return (
     <div className="event-card">
@@ -220,14 +239,13 @@ function CustomEvent({ event }: any) {
         {/* Status Flag */}
         <div 
           className="flag" 
-          title={`Status: ${rental.status}`}
-          style={{ backgroundColor: statusColors[rental.status] || "#3b82f6" }} 
+          title={`Status: ${rental.is_paid ? 'Pago' : rental.status}`}
+          style={{ backgroundColor: statusColors[status] || "#3b82f6" }} 
         />
-        {/* Platform Flag */}
         <div 
           className="flag" 
           title={`Origem: ${rental.platform_source}`}
-          style={{ backgroundColor: platformColors[rental.platform_source] || "#94a3b8" }} 
+          style={{ backgroundColor: getPlatformColor(rental.platform_source) }} 
         />
       </div>
     </div>

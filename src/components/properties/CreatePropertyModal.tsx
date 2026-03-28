@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Home, DollarSign, Users, Link as LinkIcon } from "lucide-react";
+import { X, Home, DollarSign, Users, Link as LinkIcon, Percent } from "lucide-react";
 import toast from "react-hot-toast";
 import { api } from "../../services/api";
 import type { CreatePropertyData, Property } from "../../types";
@@ -23,6 +23,8 @@ export function CreatePropertyModal({ isOpen, onClose, onSuccess }: Props) {
     max_guests: 1,
     photo_url: "",
     ical_url: "",
+    platform_fee_percentage: 15,
+    property_type: 'seasonal',
   });
 
   if (!isOpen) return null;
@@ -44,6 +46,8 @@ export function CreatePropertyModal({ isOpen, onClose, onSuccess }: Props) {
         max_guests: 1,
         photo_url: "",
         ical_url: "",
+        platform_fee_percentage: 15,
+        property_type: 'seasonal',
       });
     } catch (error) {
       console.error(error);
@@ -101,6 +105,28 @@ export function CreatePropertyModal({ isOpen, onClose, onSuccess }: Props) {
               />
             </div>
 
+            {/* TIPO DE PROPRIEDADE */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Tipo de Aluguel
+              </label>
+              <select
+                className="w-full rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-slate-900 outline-none transition-all"
+                value={formData.property_type}
+                onChange={(e) =>
+                  setFormData({ ...formData, property_type: e.target.value as 'seasonal' | 'fixed' })
+                }
+              >
+                <option value="seasonal">Temporada (Short-term)</option>
+                <option value="fixed">Fixo / Mensal (Long-term)</option>
+              </select>
+              <p className="text-xs text-slate-500 mt-1">
+                {formData.property_type === 'seasonal' 
+                  ? "Ideal para Airbnb/Booking com alta rotatividade." 
+                  : "Ideal para contratos mensais ou anuais."}
+              </p>
+            </div>
+
             {/* 2. LINHA FINANCEIRA (PREÇO + TAXA DE LIMPEZA) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -135,6 +161,26 @@ export function CreatePropertyModal({ isOpen, onClose, onSuccess }: Props) {
                     setFormData({
                       ...formData,
                       cleaning_fee: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-1">
+                  <Percent size={14} /> Taxa Plataforma (%)
+                </label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  max="100"
+                  step="0.1"
+                  className="w-full rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-slate-900 outline-none"
+                  value={formData.platform_fee_percentage}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      platform_fee_percentage: Number(e.target.value),
                     })
                   }
                 />

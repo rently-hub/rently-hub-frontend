@@ -14,6 +14,7 @@ import {
   Building2,
   Link as LinkIcon,
   RefreshCcw,
+  Percent,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { api } from "../../services/api";
@@ -69,6 +70,8 @@ export function PropertyDetailsModal({
     max_guests: 0,
     photo_url: "",
     ical_url: "",
+    platform_fee_percentage: 15,
+    property_type: 'seasonal',
   });
 
   useEffect(() => {
@@ -82,6 +85,8 @@ export function PropertyDetailsModal({
         max_guests: property.max_guests,
         photo_url: property.photo_url || "",
         ical_url: property.ical_url || "",
+        platform_fee_percentage: property.platform_fee_percentage || 15,
+        property_type: property.property_type || 'seasonal',
       });
       setIsEditing(false);
     }
@@ -310,12 +315,46 @@ export function PropertyDetailsModal({
                 }
                 type="number"
               />
+
+              <InfoCard
+                icon={<Percent size={20} />}
+                label="Taxa Plataforma"
+                value={`${property.platform_fee_percentage}%`}
+                isEditing={isEditing}
+                editValue={formData.platform_fee_percentage}
+                onChange={(v: string) =>
+                  setFormData({ ...formData, platform_fee_percentage: Number(v) })
+                }
+                type="number"
+              />
+
+              {/* TIPO DE PROPRIEDADE */}
+              <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-100 flex flex-col gap-1 items-start">
+                <div className="flex items-center gap-2 text-slate-500 mb-1">
+                  <Building2 size={18} />
+                  <span className="text-xs font-bold uppercase tracking-wider">Tipo de Aluguel</span>
+                </div>
+                {isEditing ? (
+                  <select
+                    className="w-full bg-white border border-slate-200 rounded-lg p-1.5 text-sm outline-none focus:ring-2 focus:ring-slate-900"
+                    value={formData.property_type}
+                    onChange={(e) => setFormData({ ...formData, property_type: e.target.value as 'seasonal' | 'fixed' })}
+                  >
+                    <option value="seasonal">Temporada</option>
+                    <option value="fixed">Fixo / Mensal</option>
+                  </select>
+                ) : (
+                  <span className="text-sm font-black text-slate-800 bg-indigo-50 px-2 py-0.5 rounded-md">
+                    {property.property_type === 'seasonal' ? 'Temporada' : 'Fixo'}
+                  </span>
+                )}
+              </div>
             </div>
 
-            {/* ICAL URL */}
-            <div className="mb-8">
+            {/* ICAL URL (IMPORT) */}
+            <div className="mb-6">
               <h3 className="font-bold text-slate-900 mb-3 text-lg flex items-center gap-2">
-                <LinkIcon size={18} className="text-slate-500" /> Integração de Calendário (iCal)
+                <LinkIcon size={18} className="text-slate-500" /> Sincronizar de Outra Plataforma (Importar)
               </h3>
               {isEditing ? (
                 <input
@@ -329,7 +368,7 @@ export function PropertyDetailsModal({
                 />
               ) : (
                 <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 flex justify-between items-center gap-3">
-                  <div className="truncate flex-1 text-sm text-slate-600 font-medium font-mono">
+                  <div className="truncate flex-1 text-xs text-slate-600 font-medium font-mono">
                     {property.ical_url || "Nenhum link configurado."}
                   </div>
                   {property.ical_url && (
@@ -339,13 +378,40 @@ export function PropertyDetailsModal({
                       className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-600 font-bold text-xs rounded-md border border-indigo-100 hover:bg-indigo-100 transition-colors disabled:opacity-50"
                     >
                       <RefreshCcw size={14} className={syncing ? "animate-spin" : ""} />
-                      {syncing ? "Sincronizando..." : "Sincronizar"}
+                      {syncing ? "Atualizar" : "Sincronizar"}
                     </button>
                   )}
                 </div>
               )}
-              {isEditing && <p className="text-xs text-slate-500 mt-1">Sincronização automática para evitar Overbooking.</p>}
             </div>
+
+            {/* ICAL EXPORT (OUTBOUND) */}
+            {!isEditing && (
+              <div className="mb-8 p-4 bg-indigo-50/50 rounded-2xl border border-indigo-100/50">
+                <h3 className="font-bold text-indigo-900 mb-2 text-sm flex items-center gap-2">
+                  <Sparkles size={16} className="text-indigo-500" /> Link de Exportação (iCal do RentlyHub)
+                </h3>
+                <p className="text-xs text-indigo-700/70 mb-3">
+                  Use este link para sincronizar o RentlyHub com o Airbnb, Booking ou Google Calendar.
+                </p>
+                <div className="flex items-center gap-2 bg-white p-2 rounded-xl border border-indigo-100 shadow-sm">
+                  <div className="flex-1 truncate text-[10px] font-mono text-indigo-600 bg-indigo-50/30 px-2 py-1.5 rounded">
+                    {window.location.origin.replace(":5173", ":8000")}{property.export_url}
+                  </div>
+                  <button
+                    onClick={() => {
+                      const url = `${window.location.origin.replace(":5173", ":8000")}${property.export_url}`;
+                      navigator.clipboard.writeText(url);
+                      toast.success("Link copiado para a área de transferência!");
+                    }}
+                    className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-200 active:scale-90"
+                    title="Copiar Link"
+                  >
+                    <LinkIcon size={14} />
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* DESCRIÇÃO */}
             <div>

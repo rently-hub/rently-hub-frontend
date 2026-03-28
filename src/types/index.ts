@@ -20,6 +20,10 @@ export interface Property {
   owner_id: number;
   status: "Disponivel" | "Ocupada";
   current_rental?: RentalInfo | null;
+  sync_token?: string | null;
+  export_url?: string | null;
+  platform_fee_percentage: number;
+  property_type: 'seasonal' | 'fixed';
 }
 
 export interface CreatePropertyData {
@@ -31,6 +35,8 @@ export interface CreatePropertyData {
   max_guests: number;
   photo_url: string;
   ical_url: string;
+  platform_fee_percentage: number;
+  property_type: 'seasonal' | 'fixed';
 }
 
 export interface Rental {
@@ -42,6 +48,10 @@ export interface Rental {
   total_price: number;
   status: string;
   platform_source: string;
+  is_external?: boolean;
+  is_paid?: boolean;
+  paid_at?: string | null;
+  external_uid?: string;
   property?: Property;
 }
 

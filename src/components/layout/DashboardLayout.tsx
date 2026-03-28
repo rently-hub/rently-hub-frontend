@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import { Menu, X } from "lucide-react"; // Importe os ícones
+import { Menu, X } from "lucide-react"; 
 import { Sidebar } from "./Sidebar";
+import { OracleChat } from "../oracle/OracleChat";
 
 export function DashboardLayout() {
   const isAuthenticated = !!localStorage.getItem("@RentlyHub:token");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Estado do menu mobile
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); 
 
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
@@ -45,6 +46,7 @@ export function DashboardLayout() {
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
+      <OracleChat />
     </div>
   );
 }
